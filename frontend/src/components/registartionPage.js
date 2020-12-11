@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 class RegistrationComponent extends Component {
     constructor(props) {
@@ -77,7 +78,7 @@ class RegistrationComponent extends Component {
 
         return (
             <div style={{ marginTop: 10 }}>
-                <h2>Registration Form</h2>
+                <h2 style={{ "text-align": "center", color: "blue", "font-style": 'italic' }}>Registration Form</h2>
                 {this.state.isFlag && <div className="alert alert-success">{msg}</div>}
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
@@ -133,6 +134,7 @@ class RegistrationComponent extends Component {
                         />
                     </div>
                 </form>
+                <h5>already have an account? <Link to="/login">Login here</Link> </h5>
             </div>
         );
     }

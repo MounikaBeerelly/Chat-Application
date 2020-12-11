@@ -5,6 +5,8 @@ import './App.css';
 
 import RegistrationComponent from './components/registartionPage';
 import LoginComponent from './components/loginPage';
+import ProfilePageComponent from './components/profile/profilePage';
+import Homecomponent from './components/homePage';
 
 class App extends Component {
   render() {
@@ -21,6 +23,9 @@ class App extends Component {
                   <Link to={'/'} className="nav-link">Home</Link>
                 </li>
                 <li className="nav-item">
+                  <Link to={'/profile'} className="nav-link">Profile</Link>
+                </li>
+                <li className="nav-item">
                   <Link to={'/register'} className="nav-link">Register</Link>
                 </li>
                 <li className="nav-item">
@@ -30,7 +35,9 @@ class App extends Component {
             </div>
           </nav>
           <Switch>
-            <Route exact path='/register' component={RegistrationComponent} />
+            <Route exact path='/' component={Homecomponent} />
+            <Route path='/profile' component={ProfilePageComponent} />
+            <Route path='/register' component={RegistrationComponent} />
             <Route path='/login' component={LoginComponent} />
           </Switch>
         </div>

@@ -1,11 +1,13 @@
 import React from 'react';
-import '../App.css';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+
+import '../App.css';
 
 function LoginComponent() {
     return (
         <div className="container">
-            <h1>Login Page</h1>
+            <h2 style={{ "text-align": "center", color: "blue", "font-style": 'italic' }}>Login Form</h2>
             <form onSubmit={(e) => login(e)}>
                 <div className="form-group">
                     <label for="username">Username</label>
@@ -27,6 +29,8 @@ function LoginComponent() {
                 </div>
                 <button type="submit" className="btn-primary">Login</button>
             </form>
+            <br /> <br />
+            <h5>Don't have an account? <Link to="/register">Register</Link> </h5>
         </div>
     );
 }
