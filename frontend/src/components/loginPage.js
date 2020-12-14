@@ -1,48 +1,67 @@
-import React from 'react';
-import axios from 'axios';
+import React, { Component } from 'react';
+import axiosInstance from '../axiosService';
 import { Link } from 'react-router-dom';
 
 import '../App.css';
 
-function LoginComponent() {
-    return (
-        <div className="container">
-            <h2 style={{ "text-align": "center", color: "blue", "font-style": 'italic' }}>Login Form</h2>
-            <form onSubmit={(e) => login(e)}>
-                <div className="form-group">
-                    <label for="username">Username</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="username"
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label for="password">Password</label>
-                    <input
-                        type="password"
-                        className="form-control"
-                        id="password"
-                        required
-                    />
-                </div>
-                <button type="submit" className="btn-primary">Login</button>
-            </form>
-            <br /> <br />
-            <h5>Don't have an account? <Link to="/register">Register</Link> </h5>
-        </div>
-    );
-}
+class LoginComponent extends Component {
+    // if (sessionStorage.getItem('chatapp-userToken')) {
+    //     window.locaton = '/profile';
+    //     return true;
+    // } else {
 
+
+
+    render() {
+        return (
+            <div className="container">
+                <h2 style={{ "textAlign": "center", color: "blue", "fontStyle": 'italic' }}>Login Form</h2>
+                <form onSubmit={(e) => login(e)}>
+                    <div className="form-group">
+                        <label htmlFor="username">Username</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="username"
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="password">Password</label>
+                        <input
+                            type="password"
+                            className="form-control"
+                            id="password"
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="btn-primary">Login</button>
+                </form>
+                <br /> <br />
+                <h5>Don't have an account? <Link to="/register">Register</Link> </h5>
+            </div>
+        );
+    }
+}
 function login(e) {
     e.preventDefault();
     let request = {
         userName: document.getElementById('username').value,
         password: document.getElementById('password').value
     }
-    axios.post('http://localhost:5000/login', request)
+    axiosInstance().post('/login', request)
         .then(res => {
+            if (res.data.status === 200) {
+                if (res.data.token) {
+                    sessionStorage.setItem('chatapp-userToken', res.data.token);
+                }
+                if (request.userName) {
+                    sessionStorage.setItem('chatapp-userName', request.userName)
+                }
+                setTimeout(() => {
+                    window.location = '/profile';
+                }, 3000);
+            }
             alert(res.data.message);
         })
         .catch(err => {

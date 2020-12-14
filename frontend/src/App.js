@@ -5,26 +5,19 @@ import './App.css';
 
 import RegistrationComponent from './components/registartionPage';
 import LoginComponent from './components/loginPage';
-import ProfilePageComponent from './components/profile/profilePage';
-import Homecomponent from './components/homePage';
+import ProfilePageComponent from './components/profilePage';
 
 class App extends Component {
   render() {
     return (
       <Router>
         <div className="container">
-          <nav className="navbar navbar-expand-lg navbar-light bg-light">
+          {/* <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="navbar-header">
-              <Link to={'/'} className="navbar-brand">Chat Application</Link>
+              <Link to={'/'} className="navbar-brand"><h1>Chat Application</h1></Link>
             </div>
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
               <ul className="navbar-nav mr-auto">
-                <li className="nav-item">
-                  <Link to={'/'} className="nav-link">Home</Link>
-                </li>
-                <li className="nav-item">
-                  <Link to={'/profile'} className="nav-link">Profile</Link>
-                </li>
                 <li className="nav-item">
                   <Link to={'/register'} className="nav-link">Register</Link>
                 </li>
@@ -33,9 +26,12 @@ class App extends Component {
                 </li>
               </ul>
             </div>
-          </nav>
+          </nav> */}
+          <div className="jumbotron">
+            <h3>Chat Application</h3>
+          </div>
           <Switch>
-            <Route exact path='/' component={Homecomponent} />
+            <Route exact path='/' component={LoginComponent} />
             <Route path='/profile' component={ProfilePageComponent} />
             <Route path='/register' component={RegistrationComponent} />
             <Route path='/login' component={LoginComponent} />
