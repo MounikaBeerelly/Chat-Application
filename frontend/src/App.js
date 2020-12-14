@@ -6,6 +6,7 @@ import './App.css';
 import RegistrationComponent from './components/registartionPage';
 import LoginComponent from './components/loginPage';
 import ProfilePageComponent from './components/profilePage';
+import UploadFileComponent from './components/uploadFilePage';
 
 class App extends Component {
   render() {
@@ -35,6 +36,7 @@ class App extends Component {
             <Route path='/profile' component={ProfilePageComponent} />
             <Route path='/register' component={RegistrationComponent} />
             <Route path='/login' component={LoginComponent} />
+            <Route path='/upload' component={UploadFileComponent} />
           </Switch>
         </div>
       </Router>
