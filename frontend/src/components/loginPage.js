@@ -1,48 +1,48 @@
 import React, { Component } from 'react';
 import axiosInstance from '../axiosService';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 import '../App.css';
 
 class LoginComponent extends Component {
-    // if (sessionStorage.getItem('chatapp-userToken')) {
-    //     window.locaton = '/profile';
-    //     return true;
-    // } else {
-
-
-
     render() {
-        return (
-            <div className="container">
-                <h2 style={{ "textAlign": "center", color: "blue", "fontStyle": 'italic' }}>Login Form</h2>
-                <form onSubmit={(e) => login(e)}>
-                    <div className="form-group">
-                        <label htmlFor="username">Username</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="username"
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="password">Password</label>
-                        <input
-                            type="password"
-                            className="form-control"
-                            id="password"
-                            required
-                        />
-                    </div>
-                    <button type="submit" className="btn-primary">Login</button>
-                </form>
-                <br /> <br />
-                <h5>Don't have an account? <Link to="/register">Register</Link> </h5>
-            </div>
-        );
+        if (sessionStorage.getItem('chatapp-userToken')) {
+            return (
+                <Redirect to='/profile' />
+            )
+        } else {
+            return (
+                <div className="container">
+                    <h2 style={{ "textAlign": "center", color: "blue", "fontStyle": 'italic' }}>Login Form</h2>
+                    <form onSubmit={(e) => login(e)}>
+                        <div className="form-group">
+                            <label htmlFor="username">Username</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="username"
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="password">Password</label>
+                            <input
+                                type="password"
+                                className="form-control"
+                                id="password"
+                                required
+                            />
+                        </div>
+                        <button type="submit" className="btn-primary">Login</button>
+                    </form>
+                    <br /> <br />
+                    <h5>Don't have an account? <Link to="/register">Register</Link> </h5>
+                </div>
+            );
+        }
     }
 }
+
 function login(e) {
     e.preventDefault();
     let request = {
