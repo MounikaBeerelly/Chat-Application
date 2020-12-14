@@ -2,7 +2,7 @@
 const cluster = require('cluster');
 const OS = require('os');
 const loggerService = require('./services/loggerService');
-const { initiateWorker } = require('./worker');
+const { initiateWorker, getSomeAsyncData } = require('./worker');
 // const cronJob = require('cron').CronJob;
 
 
@@ -15,9 +15,19 @@ const { initiateWorker } = require('./worker');
 // })
 
 if (cluster['isMaster']) {
-    for (let i = 0; i < OS.cpus().length; i++) {
-        cluster.fork();
-    }
+    let workers = [];
+    getSomeAsyncData().then((configData) => {
+        for (let i = 0; i < OS.cpus().length; i++) {
+            let worker = cluster.fork();
+            console.log(worker.process.pid)
+            workers[worker.process.pid] = worker;
+            configData.processId = worker.process.pid;
+
+        }
+        cluster.on('online', function (onlineWorker) {
+            onlineWorker.send(configData);
+        })
+    })
 } else {
     initiateWorker();
 }

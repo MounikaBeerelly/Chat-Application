@@ -5,6 +5,7 @@ const jwtService = require('./jwtService');
 const logger = require('../services/loggerService');
 
 function invoke(req) {
+    console.log('process ID: ', process.pid)
     return new Promise((resolve, reject) => {
         const db = mongoUtil.getDb();
         const userName = req.body.userName;

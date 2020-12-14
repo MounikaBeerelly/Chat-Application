@@ -8,6 +8,7 @@ function initiateWorker() {
 
     const mongoUtil = require('./services/dbService/dbConnection');
     const registrationApi = require('./api/registrationApi');
+
     mongoUtil.connectToServer(function (err, client) {
         const server = require('http').createServer(app);
         const io = require('socket.io')(server);
@@ -76,4 +77,19 @@ function initiateWorker() {
         });
     });
 }
-module.exports = { initiateWorker }
+module.exports = { initiateWorker, getSomeAsyncData }
+
+
+
+function getSomeAsyncData() {
+    console.log('executed')
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve({ JWT_ALGO: 'RS256' });
+        }, 5000)
+    })
+}
+process.on('message', function (data) {
+    global.JWT_ALGO = data.JWT_ALGO;
+    console.log('received data : ', data)
+})
