@@ -3,6 +3,7 @@ var salt = bcrypt.genSaltSync(10);
 var mongoUtil = require('./dbService/dbConnection');
 const jwtService = require('./jwtService');
 const logger = require('../services/loggerService');
+
 function invoke(req) {
     return new Promise((resolve, reject) => {
         const db = mongoUtil.getDb();
@@ -10,7 +11,7 @@ function invoke(req) {
         logger.debug(req.body.transID + ' :- Fetching from users db with username: ' + req.body.userName);
         db.collection('users').find({ userName: userName }).toArray(function (err, docs) {
             if (err) {
-                logger.error(req.body.transID + ' :- Received error from db calle: ' + JSON.stringify(err.stack));
+                logger.error(req.body.transID + ' :- Received error from db call: ' + JSON.stringify(err.stack));
                 reject(err)
             } else {
                 // console.log(bcrypt.hashSync(req.body.password, salt))

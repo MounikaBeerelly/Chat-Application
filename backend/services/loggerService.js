@@ -3,8 +3,8 @@ const log4js = require('log4js');
 log4js.configure({
     appenders: {
         debug: { type: "file", filename: "logs/debug.log" },
-        error: { type: "file", filename: "logs/error.log" },
-        trace: { type: "file", filename: "logs/trace.log" }
+        error: { type: "file", filename: "./logs/error.log" },
+        trace: { type: "file", filename: "./logs/trace.log" }
     },
     categories: {
         default: { appenders: ["debug"], level: "debug" },
