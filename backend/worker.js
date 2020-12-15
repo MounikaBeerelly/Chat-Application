@@ -16,7 +16,7 @@ function initiateWorker() {
         const loginRoute = require('./routes/loginRoute');
         const registrationRoute = require('./routes/registrationRoute');
         const profileRoute = require('./routes/profileRoute');
-
+        const uploadRoute = require('./routes/uploadRoute');
 
         // let Users = [];
         // io.on('connection', function (clientSocket) {
@@ -71,6 +71,7 @@ function initiateWorker() {
         loginRoute.applyRoute(app);
         registrationRoute.applyRoute(app);
         profileRoute.applyRoute(app);
+        uploadRoute.applyRoute(app);
 
         server.listen(port, () => {
             console.log('Server running on the port 5000');
