@@ -72,7 +72,7 @@ class UploadFileComponent extends Component {
             onUploadProgress: (ProgressEvent) => {
                 const { loaded, total } = ProgressEvent;
                 let percent = Math.floor(loaded * 100 / total);
-                console.log(`${loaded}b of ${total}b | ${percent}%`)
+                console.log(`${loaded} of ${total} | ${percent}%`)
 
                 if (percent < 100) {
                     this.setState({ uploadPercentage: percent });

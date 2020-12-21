@@ -1,8 +1,16 @@
 
 const cluster = require('cluster');
 const OS = require('os');
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+
+app.use(bodyParser.json());
+const socketService = require('./services/socketService');;
+
 const loggerService = require('./services/loggerService');
 const { initiateWorker, getSomeAsyncData } = require('./worker');
+const server = require('http').createServer(app);
 // const cronJob = require('cron').CronJob;
 
 
@@ -16,10 +24,10 @@ const { initiateWorker, getSomeAsyncData } = require('./worker');
 
 if (cluster['isMaster']) {
     let workers = [];
+    socketService.initiateSocket(server);
     getSomeAsyncData().then((configData) => {
         for (let i = 0; i < OS.cpus().length; i++) {
             let worker = cluster.fork();
-            console.log(worker.process.pid)
             workers[worker.process.pid] = worker;
             configData.processId = worker.process.pid;
 
@@ -29,7 +37,7 @@ if (cluster['isMaster']) {
         })
     })
 } else {
-    initiateWorker();
+    initiateWorker(server, app);
 }
 
 // function myCronHandler() {

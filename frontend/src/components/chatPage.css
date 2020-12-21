@@ -1,0 +1,28 @@
+
+.wrapper {
+    display:flex;
+    flex: 1;
+    flex-direction: row;
+}
+ .leftWrapper {
+     display: flex;
+     flex: 2;
+ }
+ .rightWrapper {
+     display: flex;
+     flex: 8;
+ }
+
+ .chatWindow {
+    display:flex;
+    flex: 3;
+    flex-direction: row;
+}
+.sidebar {
+    display:flex;
+    flex: 3;
+}
+.main {
+    display:flex;
+    flex: 5;
+}
