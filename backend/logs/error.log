@@ -2,3 +2,9 @@
 [2020-12-13T15:50:19.869] [ERROR] error - unique_1 :- Got  invalid login response from servcie
 [2020-12-13T15:52:15.250] [ERROR] error - unique_1 :-provided username is invalid
 [2020-12-13T15:52:15.250] [ERROR] error - unique_1 :- Got  invalid login response from servcie
+[2020-12-21T16:36:11.442] [ERROR] error - unique_1 :-provided username is invalid
+[2020-12-21T16:36:11.448] [ERROR] error - unique_1 :- Got  invalid login response from servcie
+[2020-12-21T19:12:51.545] [ERROR] error - undefined :-provided username is invalid
+[2020-12-21T19:12:51.545] [ERROR] error - undefined :- Got  invalid login response from servcie
+[2020-12-21T19:13:01.972] [ERROR] error - undefined :-provided username is invalid
+[2020-12-21T19:13:01.972] [ERROR] error - undefined :- Got  invalid login response from servcie

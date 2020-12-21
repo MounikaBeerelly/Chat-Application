@@ -1,5 +1,5 @@
 const registrationService = require('../services/registrationService');
-
+const logger = require('../services/loggerService');
 function invoke(req, res) {
     registrationService.invoke(req).then((registrationResponse) => {
         logger.debug(req.body.transID, ' :- Registration was sucessfull');

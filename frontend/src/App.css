@@ -1,4 +1,4 @@
-h1 {
+h6 {
   color: red;
 }
 button {
@@ -21,3 +21,36 @@ h3{
   text-align: center;
   font-weight: 100;
 }
+
+.chatWindow {
+  background-color: white;
+  border: 1px solid black;
+  color:white;
+  width: 100%;
+  height:350px;
+}
+ 
+#chatPage {
+  background-color: lightgrey;
+  width: 100%;
+  height:350px;
+}
+ #inputSection {
+  position: fixed;
+  bottom: 0;
+}
+
+#messageBox {
+  width: 350px;
+  color:black;
+}
+
+#sidebar-wrapper {
+  background-color: black;
+  color: white;
+  width: 100%;
+  height:350px;
+}
+
+
+

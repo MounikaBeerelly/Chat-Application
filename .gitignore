@@ -7,3 +7,4 @@ backend/package-lock.json
 backend/logs/debug.log
 backend/logs/error.log
 backend/logs/trace.log
+backend/uploads
