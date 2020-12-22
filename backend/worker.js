@@ -5,6 +5,7 @@ function initiateWorker(server, app) {
 
 
     const mongoUtil = require('./services/dbService/dbConnection');
+    const socketService = require('./services/socketService');
     const registrationApi = require('./api/registrationApi');
     mongoUtil.connectToServer(function (err, client) {
 
@@ -39,7 +40,7 @@ function initiateWorker(server, app) {
         registrationRoute.applyRoute(app);
         profileRoute.applyRoute(app);
         uploadRoute.applyRoute(app);
-
+        socketService.initiateSocket(server);
         server.listen(port, () => {
             console.log('Server running on the port 5000');
         });
