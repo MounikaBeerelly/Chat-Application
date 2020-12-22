@@ -6,7 +6,7 @@ const publicKey = fs.readFileSync('keys/public.key');
 
 function sign(payload) {
     return new Promise((resolve, reject) => {
-        jwt.sign(payload, privateKey, { algorithm: global.JWT_ALGO, expiresIn: 600 }, function (err, token) {
+        jwt.sign(payload, privateKey, { algorithm: global.JWT_ALGO, expiresIn: 6000 }, function (err, token) {
             console.log(token);
             if (err) {
                 reject(err)

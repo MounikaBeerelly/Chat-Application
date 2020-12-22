@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const app = express();
 
 app.use(bodyParser.json());
-const socketService = require('./services/socketService');;
+
 
 const loggerService = require('./services/loggerService');
 const { initiateWorker, getSomeAsyncData } = require('./worker');
@@ -24,7 +24,6 @@ const server = require('http').createServer(app);
 
 if (cluster['isMaster']) {
     let workers = [];
-    socketService.initiateSocket(server);
     getSomeAsyncData().then((configData) => {
         for (let i = 0; i < OS.cpus().length; i++) {
             let worker = cluster.fork();

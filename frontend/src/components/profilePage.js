@@ -12,12 +12,16 @@ class ProfilePageComponent extends Component {
                 userName: '',
             },
             messageText: '',
-            onlineUsers: [],
+            onlineUsers: []
         };
+        this.selectedUser = null;
+        this.selectedUserFlag = 0;
+
     }
 
-    handleClick = event => {
+    sendMessage = event => {
         event.preventDefault();
+        console.log(this.state.messageText)
     };
 
     handleChange = event => {
@@ -42,6 +46,7 @@ class ProfilePageComponent extends Component {
 
                     socket.on('loadUsers', (userData) => {
                         console.log('new User joined', userData);
+                        this.selectedUserFlag = 0;
                         this.setState({ onlineUsers: userData });
                     })
                 }
@@ -52,8 +57,14 @@ class ProfilePageComponent extends Component {
             })
     }
 
+    changeUser = e => {
+        this.selectedUser = e.target.id;
+        console.log(this.selectedUser);
+    }
+
     render() {
         const { onlineUsers } = this.state;
+
         return (
             <div className="container">
                 <div className="row">
@@ -64,37 +75,50 @@ class ProfilePageComponent extends Component {
                         <h6>LastName: <i>{this.state.users.lastName}</i></h6>
                     </div>
                     <div className="col-md-9">
-                        <div className="chatWindow">
-                            <div className="col-md-4" id="sidebar-wrapper">
-                                <h4><u>List of users :</u></h4>
-                                <ul id="userAccordion" className="sidebar-nav">
-                                    {onlineUsers.map((user, index) => {
-                                        return <li key={index}>{user.firstName}</li>
-                                    })}
-                                </ul>
-                            </div>
-                            <div id="chatPage" class="col-md-8">
-                                <div id="chatBox" class="col-md-12">
+                        {this.state.onlineUsers.length > 1 && (
+                            <div className="chatWindow">
+                                <div className="col-md-4" id="sidebar-wrapper">
+                                    <h4><u>List of users :</u></h4>
+                                    <ul id="userAccordion" className="sidebar-nav">
+                                        {onlineUsers.map((user, index) => {
+                                            if (user.userName !== this.state.users.userName) {
+                                                if (this.selectedUserFlag === 0) {
+                                                    this.selectedUserFlag = 1;
+                                                    this.selectedUser = user.userName;
 
+                                                }
+                                                return <li className={user.userName === this.selectedUser ? 'activeUser' : ''} key={index} id={user.userName} onClick={this.changeUser}>{user.name}</li>
+                                            } else {
+                                                return null;
+                                            }
+                                        })}
+                                    </ul>
                                 </div>
-                                <div id="inputSection" class="row">
-                                    <div className="col-md-10">
-                                        <input
-                                            type="text"
-                                            id="messageBox"
-                                            placeholder="Enter your message here"
-                                            onChange={this.handleChange} />
-                                    </div>
-                                    <div className="col-md-2" >
-                                        <button
-                                            id="sendBtn"
-                                            className="btn btn-success"
-                                            onClick={this.handleClick}>Send</button>
-                                    </div>
-                                </div>
-                            </div>
+                                <div id="chatPage" className="col-md-8">
+                                    <div id="chatBox" className="col-md-12">
 
-                        </div>
+                                    </div>
+                                    <div id="inputSection" className="row">
+                                        <div className="col-md-10">
+                                            <input
+                                                type="text"
+                                                id="messageBox"
+                                                onChange={this.handleChange}
+                                                value={this.state.messageText}
+                                                placeholder="Enter your message here"
+                                            />
+                                        </div>
+                                        <div className="col-md-2" >
+                                            <button
+                                                id="sendBtn"
+                                                className="btn btn-success"
+                                                onClick={this.sendMessage}>Send</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
