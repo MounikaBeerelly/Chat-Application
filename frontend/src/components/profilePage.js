@@ -12,21 +12,13 @@ class ProfilePageComponent extends Component {
                 userName: '',
             },
             messageText: '',
-            onlineUsers: []
+            onlineUsers: [],
+            messages: [],
         };
         this.selectedUser = null;
         this.selectedUserFlag = 0;
-
+        this.socket = null;
     }
-
-    sendMessage = event => {
-        event.preventDefault();
-        console.log(this.state.messageText)
-    };
-
-    handleChange = event => {
-        this.setState({ messageText: event.target.value });
-    };
 
     componentDidMount() {
         axiosInstance().get('/profile?userName=' + sessionStorage.getItem('chatapp-userName'))
@@ -35,20 +27,26 @@ class ProfilePageComponent extends Component {
                     sessionStorage.removeItem('chatapp-userToken');
                     window.location = '/login';
                 } else if (response.data.status === 200) {
-                    const socket = openSocket('http://localhost:5000', { transports: ['websocket'] });
+                    this.socket = openSocket('http://localhost:5000', { transports: ['websocket'] });
                     this.setState({ users: response.data.profielInfo });
                     const userData = {
-                        id: socket.id,
+                        id: this.socket.id,
                         userName: this.state.users.userName,
                         firstName: this.state.users.firstName
                     }
-                    socket.emit('newUser', userData);
-
-                    socket.on('loadUsers', (userData) => {
+                    this.socket.emit('newUser', userData);
+                    this.socket.on('loadUsers', (userData) => {
                         console.log('new User joined', userData);
                         this.selectedUserFlag = 0;
                         this.setState({ onlineUsers: userData });
-                    })
+                    });
+
+                    this.socket.on('shareMessage', (messageData) => {
+                        console.log('new Message', messageData);
+                        let msgArr = this.state.messages;
+                        msgArr.push(messageData);
+                        this.setState({ messages: msgArr });
+                    });
                 }
             })
             .catch(function (error) {
@@ -59,8 +57,27 @@ class ProfilePageComponent extends Component {
 
     changeUser = e => {
         this.selectedUser = e.target.id;
-        console.log(this.selectedUser);
+        this.selectedUserFlag = 0;
+        this.setState({ onlineUsers: this.state.onlineUsers });
     }
+
+    sendMessage = event => {
+        event.preventDefault();
+        if (!!this.socket) {
+            let messageText = this.state.messageText;
+            this.socket.emit('message', {
+                fromUserName: this.state.users.userName,
+                toUserName: this.selectedUser,
+                message: messageText
+            });
+            this.setState({ messageText: null });
+        }
+
+    };
+
+    handleChange = event => {
+        this.setState({ messageText: event.target.value });
+    };
 
     render() {
         const { onlineUsers } = this.state;
@@ -83,9 +100,12 @@ class ProfilePageComponent extends Component {
                                         {onlineUsers.map((user, index) => {
                                             if (user.userName !== this.state.users.userName) {
                                                 if (this.selectedUserFlag === 0) {
-                                                    this.selectedUserFlag = 1;
-                                                    this.selectedUser = user.userName;
-
+                                                    if (!!this.selectedUser) {
+                                                        this.selectedUserFlag = 1;
+                                                    } else {
+                                                        this.selectedUserFlag = 1;
+                                                        this.selectedUser = user.userName;
+                                                    }
                                                 }
                                                 return <li className={user.userName === this.selectedUser ? 'activeUser' : ''} key={index} id={user.userName} onClick={this.changeUser}>{user.name}</li>
                                             } else {
@@ -96,7 +116,14 @@ class ProfilePageComponent extends Component {
                                 </div>
                                 <div id="chatPage" className="col-md-8">
                                     <div id="chatBox" className="col-md-12">
-
+                                        {this.state.messages.map((messageData, index) => {
+                                            if (messageData.fromUserName === this.selectedUser ||
+                                                (messageData.fromUserName === this.state.users.userName && messageData.toUserName === this.selectedUser)) {
+                                                return <p key={index}>{messageData.message}</p>
+                                            } else {
+                                                return null;
+                                            }
+                                        })}
                                     </div>
                                     <div id="inputSection" className="row">
                                         <div className="col-md-10">

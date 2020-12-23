@@ -15,14 +15,16 @@ function initiateSocket(server) {
 
         clientSocket.on('newUser', (data) => {
             Users.push({ id: clientSocket.id, userName: data.userName, name: data.firstName });
-            console.log('users', Users)
             io.emit('loadUsers', Users);
         });
 
         clientSocket.on('message', (data) => {
-            let receiverId = data.socketId;
+            console.log('message', data)
+            let toUserName = data.toUserName;
             let message = data.message;
-            clientSocket.broadcast.to(receiverId).emit('sharemessage', { message: message, senderId: clientSocket.id });
+            let toUserSocketID = getUserSocketId(toUserName);
+            clientSocket.broadcast.to(toUserSocketID).emit('shareMessage', { message: message, fromUserName: data.fromUserName, toUserName: toUserName });
+            clientSocket.emit('shareMessage', { message: message, fromUserName: data.fromUserName, toUserName: toUserName });
         });
 
         clientSocket.on('disconnect', (socket) => {
@@ -48,6 +50,22 @@ function getUserSocket(userName) {
     for (let i = 0; i < Users.length; i++) {
         if (Users[i].userName === userName) {
             return clientSocketsArr[Users[i].id];
+        }
+    }
+}
+
+function getUserSocketId(userName) {
+    for (let i = 0; i < Users.length; i++) {
+        if (Users[i].userName === userName) {
+            return Users[i].id;
+        }
+    }
+}
+
+function getUserName(socketId) {
+    for (let i = 0; i < Users.length; i++) {
+        if (Users[i].id === socketId) {
+            return Users[i].userName;
         }
     }
 }
