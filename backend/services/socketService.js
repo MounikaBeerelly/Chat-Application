@@ -1,3 +1,5 @@
+const messageService = require('./messageService');
+
 let Users = [];
 let clientSocketsArr = [];
 
@@ -23,9 +25,25 @@ function initiateSocket(server) {
             let toUserName = data.toUserName;
             let message = data.message;
             let toUserSocketID = getUserSocketId(toUserName);
-            clientSocket.broadcast.to(toUserSocketID).emit('shareMessage', { message: message, fromUserName: data.fromUserName, toUserName: toUserName });
-            clientSocket.emit('shareMessage', { message: message, fromUserName: data.fromUserName, toUserName: toUserName });
+            messageService.insertMessages(data).then((insertResponse) => {
+                messageService.getMessages(data.fromUserName, data.toUserName).then((messageResponse) => {
+                    clientSocket.broadcast.to(toUserSocketID).emit('shareMessage', { message: messageResponse, fromUserName: data.fromUserName, toUserName: data.toUserName });
+                    clientSocket.emit('shareMessage', { message: messageResponse, fromUserName: data.fromUserName, toUserName: data.toUserName });
+                }).catch((err) => {
+                    console.log(err);
+                })
+            }).catch((err) => {
+                console.log(err);
+            })
         });
+
+        clientSocket.on('messageHistory', (data) => {
+            messageService.getMessages(data.fromUserName, data.toUserName).then((messageResponse) => {
+                clientSocket.emit('shareMessage', { message: messageResponse, fromUserName: data.fromUserName, toUserName: data.toUserName });
+            }).catch((err) => {
+                console.log(err);
+            })
+        })
 
         clientSocket.on('disconnect', (socket) => {
             console.log('disconnected', clientSocket.id)

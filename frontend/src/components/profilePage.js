@@ -43,9 +43,7 @@ class ProfilePageComponent extends Component {
 
                     this.socket.on('shareMessage', (messageData) => {
                         console.log('new Message', messageData);
-                        let msgArr = this.state.messages;
-                        msgArr.push(messageData);
-                        this.setState({ messages: msgArr });
+                        this.setState({ messages: messageData.message });
                     });
                 }
             })
@@ -59,6 +57,7 @@ class ProfilePageComponent extends Component {
         this.selectedUser = e.target.id;
         this.selectedUserFlag = 0;
         this.setState({ onlineUsers: this.state.onlineUsers });
+        this.getMessagesHistory(this.selectedUser);
     }
 
     sendMessage = event => {
@@ -70,10 +69,17 @@ class ProfilePageComponent extends Component {
                 toUserName: this.selectedUser,
                 message: messageText
             });
-            this.setState({ messageText: null });
+            this.setState({ messageText: '' });
         }
 
     };
+
+    getMessagesHistory = (fromUserName) => {
+        this.socket.emit('messageHistory', {
+            fromUserName: this.state.users.userName,
+            toUserName: this.selectedUser
+        })
+    }
 
     handleChange = event => {
         this.setState({ messageText: event.target.value });
@@ -106,6 +112,7 @@ class ProfilePageComponent extends Component {
                                                         this.selectedUserFlag = 1;
                                                         this.selectedUser = user.userName;
                                                     }
+                                                    this.getMessagesHistory(this.selectedUser);
                                                 }
                                                 return <li className={user.userName === this.selectedUser ? 'activeUser' : ''} key={index} id={user.userName} onClick={this.changeUser}>{user.name}</li>
                                             } else {
@@ -119,7 +126,8 @@ class ProfilePageComponent extends Component {
                                         {this.state.messages.map((messageData, index) => {
                                             if (messageData.fromUserName === this.selectedUser ||
                                                 (messageData.fromUserName === this.state.users.userName && messageData.toUserName === this.selectedUser)) {
-                                                return <p key={index}>{messageData.message}</p>
+
+                                                return <p key={index} className={messageData.fromUserName === this.state.users.userName ? 'self' : 'others'}>{messageData.message}</p>
                                             } else {
                                                 return null;
                                             }
