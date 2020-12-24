@@ -34,6 +34,7 @@ h3{
   background-color: lightgrey;
   width: 100%;
   height:350px;
+  color: black;
 }
  #inputSection {
   position: fixed;
@@ -56,5 +57,14 @@ h3{
   color:red;
 }
 
-
+.self {
+  text-align: right;
+  font-weight: bold;
+  color: green;
+}
+.others {
+  text-align: left;
+  color: black;
+  font-weight: bold;
+}
 
