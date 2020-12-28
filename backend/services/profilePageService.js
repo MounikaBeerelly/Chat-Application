@@ -9,7 +9,7 @@ function invoke(req) {
             } else {
                 if (!!docs && docs.length > 0) {
                     delete docs[0].password
-                    resolve({ status: 200, profielInfo: docs[0] });
+                    resolve({ status: 200, profileInfo: docs[0] });
                 } else {
                     resolve({ status: 404, message: 'Invalid username' });
                 }

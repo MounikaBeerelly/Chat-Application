@@ -8,3 +8,4 @@
 ### Backend:
 1. install node_modules using `npm install` command.
 2. run the application using `npm start` command.
+3. run the testcases using `npm test` command.

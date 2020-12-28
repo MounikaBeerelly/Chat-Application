@@ -1,4 +1,5 @@
 const messageService = require('./messageService');
+const usersService = require('./usersService');
 
 let Users = [];
 let clientSocketsArr = [];
@@ -15,9 +16,12 @@ function initiateSocket(server) {
         console.log(clientSocket.id, '-- got connected')
 
 
-        clientSocket.on('newUser', (data) => {
-            Users.push({ id: clientSocket.id, userName: data.userName, name: data.firstName });
-            io.emit('loadUsers', Users);
+        clientSocket.on('onlineUser', (data) => {
+            usersService.updateUserStatus({ userName: data.userName }, { status: "active", socketId: clientSocket.id }).then((updateResponse) => {
+                io.emit('refreshUsers', {});
+            }).catch((err) => {
+                console.log(err);
+            })
         });
 
         clientSocket.on('message', (data) => {
@@ -37,6 +41,15 @@ function initiateSocket(server) {
             })
         });
 
+        clientSocket.on('fetchUsers', (data) => {
+            usersService.getUsers(data.loginUserName).then((usersResponse) => {
+                console.log(usersResponse);
+                clientSocket.emit('loadUsers', usersResponse);
+            }).catch((err) => {
+                console.log(err);
+            })
+        });
+
         clientSocket.on('messageHistory', (data) => {
             messageService.getMessages(data.fromUserName, data.toUserName).then((messageResponse) => {
                 clientSocket.emit('shareMessage', { message: messageResponse, fromUserName: data.fromUserName, toUserName: data.toUserName });
@@ -47,29 +60,15 @@ function initiateSocket(server) {
 
         clientSocket.on('disconnect', (socket) => {
             console.log('disconnected', clientSocket.id)
-            for (let i = 0; i < Users.length; i++) {
-                if (Users[i].id === clientSocket.id) {
-                    Users.splice(i, 1);
-                }
-            }
+            usersService.updateUserStatus({ socketId: clientSocket.id }, { status: "inActive", socketId: '' }).then(() => {
+                console.log('Updated record on disconnection');
+                io.emit('refreshUsers', {});
+            }).catch((err) => {
+                console.log(err);
+            })
             delete clientSocketsArr[clientSocket.id];
-            io.emit('loadUsers', Users);
         });
     });
-
-    // io.on('newUser', (data) => {
-    //     console.log
-    //     Users.push({ id: clientSocket.id, userName: data.userName, name: data.firstName });
-    //     io.emit('loadUsers', Users)
-    // });
-}
-
-function getUserSocket(userName) {
-    for (let i = 0; i < Users.length; i++) {
-        if (Users[i].userName === userName) {
-            return clientSocketsArr[Users[i].id];
-        }
-    }
 }
 
 function getUserSocketId(userName) {
@@ -80,13 +79,5 @@ function getUserSocketId(userName) {
     }
 }
 
-function getUserName(socketId) {
-    for (let i = 0; i < Users.length; i++) {
-        if (Users[i].id === socketId) {
-            return Users[i].userName;
-        }
-    }
-}
 
-
-module.exports = { initiateSocket, getUserSocket }
+module.exports = { initiateSocket }

@@ -1,12 +1,12 @@
 const MongoClient = require('mongodb').MongoClient;
-const url = "mongodb://localhost:27017";
+//console.log(process.env);
 
+const envConfig = require('../../configurator').getEnvConfigFile();
 var _db;
-
 module.exports = {
 
     connectToServer: function (callback) {
-        MongoClient.connect(url, { useNewUrlParser: true }, function (err, client) {
+        MongoClient.connect(envConfig.mongoURL, { useNewUrlParser: true }, function (err, client) {
             _db = client.db('SocketApp');
             return callback(err);
         });
