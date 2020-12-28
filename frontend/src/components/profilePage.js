@@ -34,11 +34,15 @@ class ProfilePageComponent extends Component {
                         userName: this.state.users.userName,
                         firstName: this.state.users.firstName
                     }
-                    this.socket.emit('newUser', userData);
+                    this.socket.emit('fetchUsers', { loginUserName: this.state.users.userName });
+                    this.socket.emit('onlineUser', userData);
                     this.socket.on('loadUsers', (userData) => {
-                        console.log('new User joined', userData);
+                        console.log('users array', userData);
                         this.selectedUserFlag = 0;
                         this.setState({ onlineUsers: userData });
+                    });
+                    this.socket.on('refreshUsers', () => {
+                        this.socket.emit('fetchUsers', { loginUserName: this.state.users.userName });
                     });
 
                     this.socket.on('shareMessage', (messageData) => {
@@ -114,7 +118,7 @@ class ProfilePageComponent extends Component {
                                                     }
                                                     this.getMessagesHistory(this.selectedUser);
                                                 }
-                                                return <li className={user.userName === this.selectedUser ? 'activeUser' : ''} key={index} id={user.userName} onClick={this.changeUser}>{user.name}</li>
+                                                return <li className={user.userName === this.selectedUser ? 'activeUser' : (user.status === 'active' ? 'onlineUser' : '')} key={index} id={user.userName} onClick={this.changeUser}>{user.firstName}</li>
                                             } else {
                                                 return null;
                                             }
